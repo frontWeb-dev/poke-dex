@@ -1,10 +1,17 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import PokeNameChip from './../Common/PokeNameChip';
+import { useNavigate } from 'react-router-dom';
 
 const PokeCard = () => {
+  const navigate = useNavigate();
+
+  const handleClick = (e: any) => {
+    navigate(`/pokemon/${e.target.id}`);
+  };
+
   return (
-    <Card>
+    <Card onClick={handleClick}>
       <Header>
         <PokeNameChip name='이상해씨' number='001' />
       </Header>
@@ -27,6 +34,17 @@ const Card = styled.li`
   padding: 10px;
   border: 1px solid #c0c0c0;
   box-shadow: 1px 1px 3px 1px #c0c0c0;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &:active {
+    background-color: yellow;
+    opacity: 0.8;
+  }
 `;
 
 const Header = styled.section`
