@@ -1,10 +1,25 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import { PokeCardProps } from '../apis/pokemonAPI';
 
-const PokeNameChip = ({ name, number = null }: any) => {
+const PokeNameChip = ({ name, id = undefined }: PokeCardProps) => {
+  const renderNumber = (id: number) => {
+    const digits = 3;
+    const numberString = id.toString();
+    if (numberString.length < digits) {
+      let result = '';
+
+      for (let i = 0; i < digits - numberString.length; i++) {
+        result += '0';
+      }
+
+      return `${result}${numberString}`;
+    }
+  };
+
   return (
     <Chip>
-      {number && <Number>{number}</Number>}
+      {id && <Number>{renderNumber(id)}</Number>}
       <Name>{name}</Name>
     </Chip>
   );

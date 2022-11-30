@@ -1,27 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import PokeNameChip from './../Common/PokeNameChip';
 import { useNavigate } from 'react-router-dom';
+import { fetchPokemonDetail, PokeCardProps, PokemonsDetailType } from '../apis/pokemonAPI';
 
-const PokeCard = () => {
+const PokeCard = (props: PokeCardProps) => {
   const navigate = useNavigate();
+  const [pokemon, setPokemon] = useState<PokemonsDetailType | null>(null);
 
-  const handleClick = (e: any) => {
-    navigate(`/pokemon/${e.target.id}`);
+  const handleClick = () => {
+    navigate(`/pokemon/${props.name}`);
   };
 
+  useEffect(() => {
+    (async () => {
+      const detail = await fetchPokemonDetail(props.name);
+      setPokemon(detail);
+    })();
+  });
+
   return (
-    <Card onClick={handleClick}>
-      <Header>
-        <PokeNameChip name='이상해씨' number='001' />
-      </Header>
-      <Body>
-        <img src='https://cdn.newswatch.kr/news/photo/202206/59393_54177_245.jpg' alt='피카츄' />
-      </Body>
-      <Footer>
-        <PokeNameChip name='Pokémon' />
-      </Footer>
-    </Card>
+    <>
+      {!pokemon ? (
+        <div>Loding...</div>
+      ) : (
+        <Card onClick={handleClick}>
+          <Header>
+            <PokeNameChip name={props.name} id={pokemon.id} />
+          </Header>
+          <Body>
+            <img src={pokemon.images.dreamWorld} alt={pokemon.name} />
+          </Body>
+          <Footer>
+            <PokeNameChip name='Pokémon' />
+          </Footer>
+        </Card>
+      )}
+    </>
   );
 };
 
@@ -56,6 +71,11 @@ const Body = styled.section`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  img {
+    width: 180px;
+    height: 180px;
+  }
 `;
 
 const Footer = styled.section`
