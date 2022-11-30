@@ -18,6 +18,7 @@ const Chip = styled.div`
   border: 1px solid #c0c0c0;
   border-radius: 16px;
   box-shadow: 0.5px 0.5px 0 0 #c0c0c0;
+  background-color: #fff;
 `;
 
 const Number = styled.div`

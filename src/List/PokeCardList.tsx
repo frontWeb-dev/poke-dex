@@ -20,7 +20,6 @@ const List = styled.ul`
   gap: 20px;
   margin: 0 0 32px 0;
   padding: 0;
-  list-style: none;
 `;
 
 export default PokeCardList;
