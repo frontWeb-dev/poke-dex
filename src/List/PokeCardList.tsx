@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import useInfiniteScroll from 'react-infinite-scroll-hook';
 import styled from '@emotion/styled';
 import PokeCard from './PokeCard';
 import { fetchPokemons, PokemonListType } from '../apis/pokemonAPI';
-import useInfiniteScroll from 'react-infinite-scroll-hook';
 
 const PokeCardList = () => {
   const [pokemons, setPokemons] = useState<PokemonListType>({
