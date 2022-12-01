@@ -6,6 +6,7 @@ const BASE_URL = 'http://pokeapi.co/api/v2/pokemon';
 export interface PokeCardProps {
   name: string;
   id?: number;
+  color?: string;
 }
 
 export interface PokemonListType {
@@ -49,6 +50,8 @@ export interface PokemonDetailType {
 export interface PokemonsDetailType {
   id: number;
   name: string;
+  koreanName: string;
+  color: string;
   weight: number;
   height: number;
   types: string[];
@@ -63,18 +66,40 @@ export interface PokemonsDetailType {
   }[];
 }
 
-export const fetchPokemons = async () => {
-  const response = await remote.get<PokemonListType>(BASE_URL);
+export interface PokemonSpeciesType {
+  color: {
+    name: string;
+  };
+  names: {
+    name: string;
+    language: {
+      name: string;
+    };
+  }[];
+}
+
+export const fetchPokemons = async (nextUrl?: string) => {
+  const requestUrl = nextUrl ? nextUrl : BASE_URL;
+  const response = await remote.get<PokemonListType>(requestUrl);
   return response.data;
 };
 
 export const fetchPokemonDetail = async (name: string): Promise<PokemonsDetailType> => {
   const response = await remote.get<PokemonDetailType>(`${BASE_URL}/${name}`);
+  const speciesResponse = await remote.get<PokemonSpeciesType>(`${BASE_URL}-species/${name}`);
   const detail = response.data;
+  const species = speciesResponse.data;
+
+  const koreanName =
+    species.names.find((item) => {
+      return item.language.name === 'ko';
+    })?.name ?? detail.name;
 
   return {
     id: detail.id,
     name: detail.name,
+    koreanName: koreanName,
+    color: species.color.name,
     weight: detail.weight / 10,
     height: detail.height / 10,
     types: detail.types.map((item) => item.type.name),
