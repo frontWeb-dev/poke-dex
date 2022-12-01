@@ -1,20 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import PokeNameChip from './../Common/PokeNameChip';
-import { fetchPokemonDetail, PokeCardProps, PokemonsDetailType } from '../apis/pokemonAPI';
+import { PokeCardProps } from '../apis/pokemonAPI';
 import { PokeImageSkeleton } from './../Common/PokeImageSkeleton';
 import { useIntersectionObserver } from 'react-intersection-observer-hook';
 import { useSelector } from 'react-redux';
-import { RootState } from '../store';
+import { RootState, useAppDispatch } from '../store';
+import { fetchPokemonDetail } from './../store/pokemonDetallSlice';
 
 const PokeCard = (props: PokeCardProps) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [ref, { entry }] = useIntersectionObserver();
-  const type = useSelector((state: RootState) => state.imageType.type);
+  const imageType = useSelector((state: RootState) => state.imageType.type);
+  const { pokemonDetails } = useSelector((state: RootState) => state.pokemonDetail);
+  const pokemon = pokemonDetails[props.name];
   const isVisible = entry && entry.isIntersecting;
-
-  const [pokemon, setPokemon] = useState<PokemonsDetailType | null>(null);
 
   const handleClick = () => {
     navigate(`/pokemon/${props.name}`, {
@@ -24,11 +26,7 @@ const PokeCard = (props: PokeCardProps) => {
 
   useEffect(() => {
     if (!isVisible) return;
-
-    (async () => {
-      const detail = await fetchPokemonDetail(props.name);
-      setPokemon(detail);
-    })();
+    dispatch(fetchPokemonDetail(props.name));
   }, [props.name, isVisible]);
 
   if (!pokemon) {
@@ -53,7 +51,7 @@ const PokeCard = (props: PokeCardProps) => {
         <PokeNameChip name={pokemon.koreanName} id={pokemon.id} color={pokemon.color} />
       </Header>
       <Body>
-        <img src={pokemon.images[type]} alt={pokemon.koreanName} />
+        <img src={pokemon.images[imageType]} alt={pokemon.koreanName} />
       </Body>
       <Footer>
         <PokeNameChip name='Pokémon' />
@@ -82,6 +80,11 @@ const Card = styled.li<{ color: string }>`
     background-color: ${(props) => props.color};
     opacity: 0.8;
   }
+
+  @media (max-width: 760px) {
+    width: 170px;
+    height: 230px;
+  }
 `;
 
 const Header = styled.section`
@@ -97,6 +100,11 @@ const Body = styled.section`
   img {
     width: 180px;
     height: 180px;
+
+    @media (max-width: 760px) {
+      width: 140px;
+      height: 140px;
+    }
   }
 `;
 

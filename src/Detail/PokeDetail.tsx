@@ -8,7 +8,7 @@ import { RootState } from '../store';
 
 const PokeDetail = () => {
   const { state } = useLocation();
-  const type = useSelector((state: RootState) => state.imageType.type);
+  const imageType = useSelector((state: RootState) => state.imageType.type);
   if (state.length === 0) {
     return (
       <Container>
@@ -25,7 +25,7 @@ const PokeDetail = () => {
   return (
     <Container>
       <ImageContainer>
-        <img src={state.images[type]} alt={state.koreanName} />
+        <img src={state.images[imageType]} alt={state.koreanName} />
       </ImageContainer>
       <Devider />
       <InfoContainer>

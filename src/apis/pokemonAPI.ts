@@ -78,13 +78,13 @@ export interface PokemonSpeciesType {
   }[];
 }
 
-export const fetchPokemons = async (nextUrl?: string) => {
+export const fetchPokemonsAPI = async (nextUrl?: string) => {
   const requestUrl = nextUrl ? nextUrl : BASE_URL;
   const response = await remote.get<PokemonListType>(requestUrl);
   return response.data;
 };
 
-export const fetchPokemonDetail = async (name: string): Promise<PokemonsDetailType> => {
+export const fetchPokemonDetailAPI = async (name: string): Promise<PokemonsDetailType> => {
   const response = await remote.get<PokemonDetailType>(`${BASE_URL}/${name}`);
   const speciesResponse = await remote.get<PokemonSpeciesType>(`${BASE_URL}-species/${name}`);
   const detail = response.data;
