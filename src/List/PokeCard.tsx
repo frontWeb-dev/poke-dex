@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import PokeNameChip from './../Common/PokeNameChip';
-import { useNavigate } from 'react-router-dom';
 import { fetchPokemonDetail, PokeCardProps, PokemonsDetailType } from '../apis/pokemonAPI';
+import { PokeImageSkeleton } from './../Common/PokeImageSkeleton';
 
 const PokeCard = (props: PokeCardProps) => {
   const navigate = useNavigate();
   const [pokemon, setPokemon] = useState<PokemonsDetailType | null>(null);
 
   const handleClick = () => {
-    navigate(`/pokemon/${props.name}`);
+    navigate(`/pokemon/${props.name}`, {
+      state: pokemon,
+    });
   };
 
   useEffect(() => {
@@ -19,28 +22,38 @@ const PokeCard = (props: PokeCardProps) => {
     })();
   });
 
+  if (!pokemon) {
+    return (
+      <Card color={'#fff'}>
+        <Header>
+          <PokeNameChip name='포켓몬' id={1} color={'#ffca09'} />
+        </Header>
+        <Body>
+          <PokeImageSkeleton />
+        </Body>
+        <Footer>
+          <PokeNameChip name='Pokémon' />
+        </Footer>
+      </Card>
+    );
+  }
+
   return (
-    <>
-      {!pokemon ? (
-        <div>Loding...</div>
-      ) : (
-        <Card onClick={handleClick}>
-          <Header>
-            <PokeNameChip name={props.name} id={pokemon.id} />
-          </Header>
-          <Body>
-            <img src={pokemon.images.dreamWorld} alt={pokemon.name} />
-          </Body>
-          <Footer>
-            <PokeNameChip name='Pokémon' />
-          </Footer>
-        </Card>
-      )}
-    </>
+    <Card onClick={handleClick} color={pokemon.color}>
+      <Header>
+        <PokeNameChip name={pokemon.koreanName} id={pokemon.id} color={pokemon.color} />
+      </Header>
+      <Body>
+        <img src={pokemon.images.dreamWorld} alt={pokemon.koreanName} />
+      </Body>
+      <Footer>
+        <PokeNameChip name='Pokémon' />
+      </Footer>
+    </Card>
   );
 };
 
-const Card = styled.li`
+const Card = styled.li<{ color: string }>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -57,7 +70,7 @@ const Card = styled.li`
   }
 
   &:active {
-    background-color: yellow;
+    background-color: ${(props) => props.color};
     opacity: 0.8;
   }
 `;

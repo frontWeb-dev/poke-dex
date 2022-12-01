@@ -2,24 +2,25 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { PokeCardProps } from '../apis/pokemonAPI';
 
-const PokeNameChip = ({ name, id = undefined }: PokeCardProps) => {
+const PokeNameChip = ({ name, color, id = undefined }: PokeCardProps) => {
   const renderNumber = (id: number) => {
     const digits = 3;
     const numberString = id.toString();
-    if (numberString.length < digits) {
-      let result = '';
-
-      for (let i = 0; i < digits - numberString.length; i++) {
-        result += '0';
-      }
-
-      return `${result}${numberString}`;
+    if (numberString.length >= digits) {
+      return numberString;
     }
+    let result = '';
+
+    for (let i = 0; i < digits - numberString.length; i++) {
+      result += '0';
+    }
+
+    return `${result}${numberString}`;
   };
 
   return (
     <Chip>
-      {id && <Number>{renderNumber(id)}</Number>}
+      {id ? <Number color={color || 'white'}>{renderNumber(id)}</Number> : null}
       <Name>{name}</Name>
     </Chip>
   );
@@ -36,9 +37,9 @@ const Chip = styled.div`
   background-color: #fff;
 `;
 
-const Number = styled.div`
+const Number = styled.div<{ color: string }>`
   padding: 2px 8px;
-  background-color: red;
+  background-color: ${(props) => props.color};
   border-radius: 16px;
 `;
 

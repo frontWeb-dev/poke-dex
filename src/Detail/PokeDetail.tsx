@@ -1,12 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from '@emotion/styled';
 import PokeNameChip from './../Common/PokeNameChip';
+import { useLocation, useParams } from 'react-router-dom';
+import { PokeImageSkeleton } from '../Common/PokeImageSkeleton';
 
 const PokeDetail = () => {
+  const { state } = useLocation();
+
+  if (state.length === 0) {
+    return (
+      <Container>
+        <ImageContainer>
+          <PokeImageSkeleton />
+        </ImageContainer>
+        <Devider />
+        <Footer>
+          <PokeNameChip name='Pokémon' />
+        </Footer>
+      </Container>
+    );
+  }
   return (
     <Container>
       <ImageContainer>
-        <img src='https://cdn.newswatch.kr/news/photo/202206/59393_54177_245.jpg' alt='피카츄' />
+        <img src={state.images.officialArtwork} alt={state.koreanName} />
       </ImageContainer>
       <Devider />
       <InfoContainer>
@@ -15,25 +32,35 @@ const PokeDetail = () => {
           <tbody>
             <tr>
               <th>번호</th>
-              <td>1</td>
+              <td>{state.id}</td>
             </tr>
             <tr>
               <th>이름</th>
-              <td>이상해씨</td>
+              <td>{`${state.koreanName} (${state.name})`}</td>
+            </tr>
+            <tr>
+              <th>타입</th>
+              <td>{state.types.toString()}</td>
+            </tr>
+            <tr>
+              <th>키</th>
+              <td>{state.height} m</td>
+            </tr>
+            <tr>
+              <th>몸무게</th>
+              <td>{state.weight} kg</td>
             </tr>
           </tbody>
         </Table>
         <SubTitle>능력치</SubTitle>
         <Table>
           <tbody>
-            <tr>
-              <th>번호</th>
-              <td>1</td>
-            </tr>
-            <tr>
-              <th>이름</th>
-              <td>이상해씨</td>
-            </tr>
+            {state.baseStat.map((stat: { name: string; value: string }) => (
+              <tr key={state.name}>
+                <th>{stat.name}</th>
+                <td>{stat.value}</td>
+              </tr>
+            ))}
           </tbody>
         </Table>
       </InfoContainer>
@@ -56,6 +83,7 @@ const ImageContainer = styled.section`
   display: flex;
   justify-content: center;
   margin: 8px 0;
+  min-height: 300px;
 
   img {
     width: 300px;
