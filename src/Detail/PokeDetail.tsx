@@ -3,10 +3,12 @@ import styled from '@emotion/styled';
 import PokeNameChip from './../Common/PokeNameChip';
 import { useLocation, useParams } from 'react-router-dom';
 import { PokeImageSkeleton } from '../Common/PokeImageSkeleton';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 
 const PokeDetail = () => {
   const { state } = useLocation();
-
+  const type = useSelector((state: RootState) => state.imageType.type);
   if (state.length === 0) {
     return (
       <Container>
@@ -23,7 +25,7 @@ const PokeDetail = () => {
   return (
     <Container>
       <ImageContainer>
-        <img src={state.images.officialArtwork} alt={state.koreanName} />
+        <img src={state.images[type]} alt={state.koreanName} />
       </ImageContainer>
       <Devider />
       <InfoContainer>
